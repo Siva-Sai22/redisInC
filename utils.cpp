@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <asm-generic/errno-base.h>
 #include <assert.h>
 #include <errno.h>
 #include <stddef.h>
@@ -23,6 +24,10 @@ int32_t read_full(int fd, char *buf, size_t n) {
 		// 0 for EOF and -1 for error
 		ssize_t rv = read(fd, buf, n);
 		if (rv <= 0) {
+			// If the read buffer is empty
+			if (errno == EINTR) {
+				continue;
+			}
 			return -1;
 		}
 
