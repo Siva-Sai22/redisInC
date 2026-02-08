@@ -138,12 +138,13 @@ static void handle_read(Conn *conn) {
 	}
 
 	Buffer *rbuf = conn->incoming;
-	buf_append(conn->incoming, buf, (size_t)rv);
+	buf_append(rbuf, buf, (size_t)rv);
 
 	while (try_one_request(conn)) {
 	}
 
-	if (buf_size(rbuf) > 0) {
+	Buffer *wbuf = conn->outgoing;
+	if (buf_size(wbuf) > 0) {
 		conn->want_read = false;
 		conn->want_write = true;
 		handle_write(conn);
