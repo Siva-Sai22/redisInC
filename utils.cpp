@@ -12,9 +12,6 @@
 #include <string.h>
 #include <unistd.h>
 
-// 32 MB
-uint32_t k_max_msg = 32 << 20;
-
 void die(const char *msg) {
 	int err = errno;
 	fprintf(stderr, "[%d] %s\n", err, msg);
@@ -23,7 +20,7 @@ void die(const char *msg) {
 
 void msg(const char *msg) { fprintf(stderr, "%s\n", msg); }
 
-int32_t read_full(int fd, uint8_t *buf, size_t n) {
+int32_t read_full(int fd, char *buf, size_t n) {
 	while (n > 0) {
 		// 0 for EOF and -1 for error
 		ssize_t rv = read(fd, buf, n);
@@ -43,7 +40,7 @@ int32_t read_full(int fd, uint8_t *buf, size_t n) {
 	return 0;
 }
 
-int32_t write_all(int fd, const uint8_t *buf, size_t n) {
+int32_t write_all(int fd, const char *buf, size_t n) {
 	while (n > 0) {
 		ssize_t rv = write(fd, buf, n);
 		if (rv <= 0) {

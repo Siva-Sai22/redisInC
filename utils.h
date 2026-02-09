@@ -7,8 +7,6 @@
 #include <stdint.h>
 #include <vector>
 
-extern uint32_t k_max_msg;
-
 struct Buffer {
 	uint8_t *buffer_begin;
 	uint8_t *buffer_end;
@@ -20,9 +18,9 @@ void die(const char *msg);
 
 void msg(const char *text);
 
-int32_t read_full(int fd, uint8_t *buf, size_t n);
+int32_t read_full(int fd, char *buf, size_t n);
 
-int32_t write_all(int fd, const uint8_t *buf, size_t n);
+int32_t write_all(int fd, const char *buf, size_t n);
 
 void buf_append(Buffer *buf, const uint8_t *data, size_t len);
 
