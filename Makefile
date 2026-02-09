@@ -1,14 +1,42 @@
-COMM := g++ -Wall -Wextra -O2
-BIN_DIR := bin
+CXX := g++
+CXXFLAGS := -Wall -Wextra -O2
 
-CLIENT_SRC := client.cpp utils.cpp
-SERVER_SRC := server.cpp utils.cpp
+BUILD_DIR := build
 
-CLIENT_BIN := $(BIN_DIR)/client
-SERVER_BIN := $(BIN_DIR)/server
+CLIENT_BIN := $(BUILD_DIR)/client
+SERVER_BIN := $(BUILD_DIR)/server
 
-client: $(BIN_DIR) $(CLIENT_SRC)
-	$(COMM) $(CLIENT_SRC) -o $(CLIENT_BIN)
+CLIENT_OBJ := $(BUILD_DIR)/client.o
+SERVER_OBJ := $(BUILD_DIR)/server.o
+UTILS_OBJ  := $(BUILD_DIR)/utils.o
 
-server: $(BIN_DIR) $(SERVER_SRC)
-	$(COMM) $(SERVER_SRC) -o $(SERVER_BIN)
+UTILS_HDR := utils.h
+
+.PHONY: all clean client server
+
+all: $(CLIENT_BIN) $(SERVER_BIN)
+
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(CLIENT_BIN): $(CLIENT_OBJ) $(UTILS_OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(SERVER_BIN): $(SERVER_OBJ) $(UTILS_OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(CLIENT_OBJ): client.cpp $(UTILS_HDR) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(SERVER_OBJ): server.cpp $(UTILS_HDR) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(UTILS_OBJ): utils.cpp utils.h | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+client: $(CLIENT_BIN)
+
+server: $(SERVER_BIN)
+
+clean:
+	rm -rf $(BUILD_DIR)
