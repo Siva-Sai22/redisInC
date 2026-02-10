@@ -6,6 +6,15 @@
 #include <stdint.h>
 #include <vector>
 
+enum {
+	TAG_NIL = 0, // nil
+	TAG_ERR = 1, // error code + msg
+	TAG_STR = 2, // string
+	TAG_INT = 3, // int64
+	TAG_DBL = 4, // double
+	TAG_ARR = 5, // array
+};
+
 struct Buffer {
 	uint8_t *buffer_begin;
 	uint8_t *buffer_end;
