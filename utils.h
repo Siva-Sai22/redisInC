@@ -1,5 +1,4 @@
-#ifndef utils_h
-#define utils_h
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -29,5 +28,3 @@ void buf_consume(Buffer *buf, size_t n);
 size_t buf_size(Buffer *buf);
 
 Buffer *new_buffer(size_t n);
-
-#endif
