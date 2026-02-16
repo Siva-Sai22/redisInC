@@ -18,7 +18,11 @@
 #include <unistd.h>
 #include <vector>
 
-#define container_of(ptr, T, member) ((T *)((char *)ptr - offsetof(T, member)))
+#define container_of(ptr, type, member)                                        \
+	({                                                                         \
+		const typeof(((type *)0)->member) *__mptr = (ptr);                     \
+		(type *)((char *)__mptr - offsetof(type, member));                     \
+	})
 
 // 32 MB
 uint32_t k_max_msg = 32 << 20;
