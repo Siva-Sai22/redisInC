@@ -6,6 +6,12 @@
 #include <stdint.h>
 #include <vector>
 
+#define container_of(ptr, type, member)                                        \
+	({                                                                         \
+		const typeof(((type *)0)->member) *__mptr = (ptr);                     \
+		(type *)((char *)__mptr - offsetof(type, member));                     \
+	})
+
 enum {
 	TAG_NIL = 0, // nil
 	TAG_ERR = 1, // error code + msg
@@ -21,6 +27,15 @@ struct Buffer {
 	uint8_t *data_begin;
 	uint8_t *data_end;
 };
+
+// FNV hash
+inline uint64_t str_hash(const uint8_t *data, size_t len) {
+	uint32_t h = 0x811C9DC5;
+	for (size_t i = 0; i < len; i++) {
+		h = (h + data[i]) * 0x01000193;
+	}
+	return h;
+}
 
 void die(const char *msg);
 
