@@ -39,7 +39,7 @@ $(SERVER_BIN): $(SERVER_OBJ) $(UTILS_OBJ) $(HASHTABLE_OBJ) $(AVL_OBJ) $(ZSET_OBJ
 $(CLIENT_OBJ): client.cpp $(UTILS_HDR) | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(SERVER_OBJ): server.cpp $(UTILS_HDR) $(HASHTABLE_HDR) $(AVL_HDR) $(ZSET_HDR) | $(BUILD_DIR)
+$(SERVER_OBJ): server.cpp list.h $(UTILS_HDR) $(HASHTABLE_HDR) $(AVL_HDR) $(ZSET_HDR) | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(UTILS_OBJ): utils.cpp $(UTILS_HDR) | $(BUILD_DIR)
