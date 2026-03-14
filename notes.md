@@ -5,8 +5,11 @@
 - [Makefile](https://makefiletutorial.com/)
 - Pointer to pointer for inserting and deleting in trees and linked list
 - AVL Trees
+- Wall time(clock_realtime) vs monotonic time
+- Mutex and Condition variables
 
 ## Todos
 
 - Add IO timeouts for read() and write()
 - Add a reversed version of zquery that does seek and iterate in descending order.
+- Implement bounded queue

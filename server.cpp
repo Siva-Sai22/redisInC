@@ -1,6 +1,7 @@
 #include "hashtable.h"
 #include "heap.h"
 #include "list.h"
+#include "thread_pool.h"
 #include "utils.h"
 #include "zset.h"
 #include <cassert>
@@ -54,6 +55,8 @@ static struct {
 	DList idle_list;
 	// timers for TTLs
 	std::vector<HeapItem> heap;
+	// the thread pool
+	ThreadPool thread_pool;
 } g_data;
 
 static void fd_set_nb(int fd) {
@@ -299,12 +302,26 @@ static void entry_set_ttl(Entry *ent, int64_t ttl_ms) {
 	}
 }
 
-static void entry_del(Entry *ent) {
+static void entry_del_sync(Entry *ent) {
 	if (ent->type == T_ZSET) {
 		zset_clear(&ent->zset);
 	}
-	entry_set_ttl(ent, -1); // remove from the heap data structure
 	delete ent;
+}
+
+static void entry_del_func(void *arg) { entry_del_sync((Entry *)arg); }
+
+static void entry_del(Entry *ent) {
+	// unlink it from the data structures
+	entry_set_ttl(ent, -1);
+	// run the destructor in a thread pool for large data structures
+	size_t set_size = (ent->type == T_ZSET) ? hm_size(&ent->zset.hmap) : 0;
+	const size_t k_large_container_size = 1000;
+	if (set_size > k_large_container_size) {
+		thread_pool_queue(&g_data.thread_pool, &entry_del_func, ent);
+	} else {
+		entry_del_sync(ent); // small; avoid context switches
+	}
 }
 
 struct LookupKey {
@@ -752,6 +769,7 @@ static void process_timers() {
 int main() {
 	// initialization
 	dlist_init(&g_data.idle_list);
+	thread_pool_init(&g_data.thread_pool, 4);
 
 	// Setting up a socket
 	int fd = socket(AF_INET, SOCK_STREAM, 0);

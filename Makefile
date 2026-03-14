@@ -17,11 +17,15 @@ UTILS_OBJ  := $(BUILD_DIR)/utils.o
 HASHTABLE_OBJ := $(BUILD_DIR)/hashtable.o
 AVL_OBJ := $(BUILD_DIR)/avl.o
 ZSET_OBJ := $(BUILD_DIR)/zset.o
+HEAP_OBJ := $(BUILD_DIR)/heap.o
+THREADPOOL_OBJ := $(BUILD_DIR)/thread_pool.o 
 
 UTILS_HDR := utils.h
 HASHTABLE_HDR := hashtable.h
 AVL_HDR := avl.h
 ZSET_HDR := zset.h
+HEAP_HDR := heap.h 
+THREADPOOL_HDR := thread_pool.h 
 
 .PHONY: all clean client server debug-client debug-server
 
@@ -33,13 +37,13 @@ $(BUILD_DIR):
 $(CLIENT_BIN): $(CLIENT_OBJ) $(UTILS_OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-$(SERVER_BIN): $(SERVER_OBJ) $(UTILS_OBJ) $(HASHTABLE_OBJ) $(AVL_OBJ) $(ZSET_OBJ)
+$(SERVER_BIN): $(SERVER_OBJ) $(UTILS_OBJ) $(HASHTABLE_OBJ) $(AVL_OBJ) $(ZSET_OBJ) $(HEAP_OBJ) $(THREADPOOL_OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 $(CLIENT_OBJ): client.cpp $(UTILS_HDR) | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(SERVER_OBJ): server.cpp list.h $(UTILS_HDR) $(HASHTABLE_HDR) $(AVL_HDR) $(ZSET_HDR) | $(BUILD_DIR)
+$(SERVER_OBJ): server.cpp list.h $(UTILS_HDR) $(HASHTABLE_HDR) $(AVL_HDR) $(ZSET_HDR) $(HEAP_HDR) $(THREADPOOL_HDR) | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(UTILS_OBJ): utils.cpp $(UTILS_HDR) | $(BUILD_DIR)
@@ -54,10 +58,16 @@ $(AVL_OBJ): avl.cpp $(AVL_HDR) | $(BUILD_DIR)
 $(ZSET_OBJ): zset.cpp $(ZSET_HDR) | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(HEAP_OBJ): heap.cpp $(HEAP_HDR) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(THREADPOOL_OBJ): thread_pool.cpp $(THREADPOOL_HDR) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 $(CLIENT_DBG_BIN): $(CLIENT_OBJ) $(UTILS_OBJ)
 	$(CXX) $(DEBUG_FLAGS) $^ -o $@
 
-$(SERVER_DBG_BIN): $(SERVER_OBJ) $(UTILS_OBJ) $(HASHTABLE_OBJ) $(AVL_OBJ) $(ZSET_OBJ)
+$(SERVER_DBG_BIN): $(SERVER_OBJ) $(UTILS_OBJ) $(HASHTABLE_OBJ) $(AVL_OBJ) $(ZSET_OBJ) $(HEAP_OBJ) $(THREADPOOL_OBJ)
 	$(CXX) $(DEBUG_FLAGS) $^ -o $@
 
 client: $(CLIENT_BIN)
