@@ -44,14 +44,14 @@ This will compile the necessary object files and build the executables.
 Start the server listening for incoming connections:
 
 ```bash
-./server
+./build/server
 ```
 
 ### Running the Client
 In a separate terminal window, start the client to send commands to the server:
 
 ```bash
-./client
+./build/client
 ```
 
 ## 📄 License
